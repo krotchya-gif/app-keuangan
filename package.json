@@ -10,7 +10,10 @@
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
     "dev:web": "pnpm --filter web dev",
-    "build:web": "pnpm --filter web build"
+    "build:web": "pnpm --filter web build",
+    "dev:mobile": "pnpm --filter @keuangan/mobile dev",
+    "android": "pnpm --filter @keuangan/mobile android",
+    "ios": "pnpm --filter @keuangan/mobile ios"
   },
   "devDependencies": {
     "turbo": "^2.0.0",

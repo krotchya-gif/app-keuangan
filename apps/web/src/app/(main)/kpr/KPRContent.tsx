@@ -7,7 +7,7 @@ import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer,
   CartesianGrid, Legend,
 } from 'recharts';
-import { Calculator, Save, X, Bookmark, Loader2, Trash2, PlusCircle, ChevronDown, ChevronUp, Layers } from 'lucide-react';
+import { Calculator, Save, X, Bookmark, Loader2, Trash2, PlusCircle, ChevronDown, ChevronUp, Layers, Eye, Calendar, Home, Wallet, Percent, Clock, TrendingUp, DollarSign, Receipt } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 
 const statusColors = { sehat: '#3ecf8e', aman: '#635bff', berat: '#f5a623', bahaya: '#ef4444' };
@@ -77,6 +77,8 @@ export function KPRContent() {
   const [userId, setUserId] = useState('');
   const [simulations, setSimulations] = useState<any[]>([]);
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [selectedSim, setSelectedSim] = useState<any>(null);
   const [simName, setSimName] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
@@ -164,6 +166,11 @@ export function KPRContent() {
         bank_fee_2: form.bankFee2,
         bank_fee_3: form.bankFee3,
         floating_phases: berjenjang ? JSON.stringify(floatingPhases) : null,
+        // Save calculated results
+        monthly_installment_min: kprResult.summary.minInstallment,
+        monthly_installment_max: kprResult.summary.maxInstallment,
+        total_interest: kprResult.summary.totalInterestPaid,
+        remaining_principal_at_floating: kprResult.summary.remainingAtFloating,
       });
       setShowSaveModal(false);
       setSimName('');
@@ -290,9 +297,18 @@ export function KPRContent() {
                 <span className="font-medium">{sim.name}</span>
                 <span className="text-xs text-muted-foreground block font-numeric">{formatRupiahCompact(Number(sim.property_price))}</span>
               </div>
-              <button onClick={(e) => deleteSimulation(sim.id, e)} className="p-1 opacity-0 group-hover:opacity-100 hover:text-red-500 transition-opacity">
-                <Trash2 className="w-3.5 h-3.5" />
-              </button>
+              <div className="flex items-center gap-1">
+                <button 
+                  onClick={(e) => { e.stopPropagation(); setSelectedSim(sim); setShowDetailModal(true); }}
+                  className="p-1 opacity-0 group-hover:opacity-100 hover:text-blue-500 transition-opacity"
+                  title="Lihat detail"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                </button>
+                <button onClick={(e) => deleteSimulation(sim.id, e)} className="p-1 opacity-0 group-hover:opacity-100 hover:text-red-500 transition-opacity">
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -770,6 +786,146 @@ export function KPRContent() {
           </div>
         </div>
       </div>
+
+      {/* Detail Modal */}
+      {showDetailModal && selectedSim && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-card w-full max-w-lg rounded-xl shadow-xl overflow-hidden animate-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
+              <div className="flex items-center gap-2">
+                <Home className="w-5 h-5 text-primary-500" />
+                <h3 className="font-semibold text-foreground">{selectedSim.name}</h3>
+              </div>
+              <button onClick={() => setShowDetailModal(false)} className="text-muted-foreground hover:bg-muted p-1 rounded-md">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            
+            <div className="p-5 space-y-5">
+              {/* Tanggal */}
+              <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/30 px-3 py-2 rounded-lg">
+                <Calendar className="w-3.5 h-3.5" />
+                Dibuat: {new Date(selectedSim.created_at).toLocaleDateString('id-ID', { 
+                  weekday: 'long', 
+                  year: 'numeric', 
+                  month: 'long', 
+                  day: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </div>
+
+              {/* Data Properti */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <Home className="w-4 h-4 text-blue-500" /> Data Properti
+                </h4>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <InfoRow label="Harga Properti" value={formatRupiah(Number(selectedSim.property_price))} />
+                  <InfoRow label="Uang Muka (DP)" value={formatRupiah(Number(selectedSim.down_payment))} />
+                  <InfoRow label="Pokok Pinjaman" value={formatRupiah(Number(selectedSim.loan_principal))} />
+                  <InfoRow label="Tenor" value={`${selectedSim.loan_period_years} tahun`} />
+                </div>
+              </div>
+
+              {/* Struktur Bunga */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <Percent className="w-4 h-4 text-purple-500" /> Struktur Bunga
+                </h4>
+                <div className="bg-muted/30 rounded-lg p-3 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Fix ({selectedSim.fixed_period_years} thn)</span>
+                    <span className="font-numeric font-medium">{(Number(selectedSim.fixed_rate) * 100).toFixed(2)}%</span>
+                  </div>
+                  {selectedSim.floating_phases && (() => {
+                    try {
+                      const phases = JSON.parse(selectedSim.floating_phases);
+                      if (Array.isArray(phases) && phases.length > 0) {
+                        return phases.map((p: any, i: number) => (
+                          <div key={i} className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">Transisi {i + 1} ({p.durationYears} thn)</span>
+                            <span className="font-numeric font-medium">{(p.rateAnnual * 100).toFixed(2)}%</span>
+                          </div>
+                        ));
+                      }
+                    } catch {}
+                    return null;
+                  })()}
+                  <div className="flex justify-between text-sm pt-2 border-t border-border/60">
+                    <span className="text-muted-foreground">Floating ({selectedSim.floating_period_years || (selectedSim.loan_period_years - selectedSim.fixed_period_years)} thn)</span>
+                    <span className="font-numeric font-medium">{(Number(selectedSim.floating_rate) * 100).toFixed(2)}%</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Hasil Perhitungan */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4 text-green-500" /> Hasil Perhitungan
+                </h4>
+                <div className="bg-muted/30 rounded-lg p-3 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Cicilan Min (Fix)</span>
+                    <span className="font-numeric font-medium text-green-600">{formatRupiah(Number(selectedSim.monthly_installment_min || 0))}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Cicilan Max (Float)</span>
+                    <span className="font-numeric font-medium text-amber-600">{formatRupiah(Number(selectedSim.monthly_installment_max || 0))}</span>
+                  </div>
+                  {selectedSim.total_interest && (
+                    <div className="flex justify-between text-sm pt-2 border-t border-border/60">
+                      <span className="text-muted-foreground">Total Bunga</span>
+                      <span className="font-numeric font-medium text-red-500">{formatRupiah(Number(selectedSim.total_interest))}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Pendapatan */}
+              <div className="space-y-3">
+                <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <Wallet className="w-4 h-4 text-cyan-500" /> Analisis Pendapatan
+                </h4>
+                <div className="bg-muted/30 rounded-lg p-3 space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Pendapatan Bulanan</span>
+                    <span className="font-numeric font-medium">{formatRupiah(Number(selectedSim.monthly_income || 0))}</span>
+                  </div>
+                  {selectedSim.monthly_income > 0 && selectedSim.monthly_installment_min > 0 && (
+                    <>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Rasio Min</span>
+                        <span className="font-numeric font-medium">{((Number(selectedSim.monthly_installment_min) / Number(selectedSim.monthly_income)) * 100).toFixed(1)}%</span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Rasio Max</span>
+                        <span className="font-numeric font-medium">{((Number(selectedSim.monthly_installment_max || selectedSim.monthly_installment_min) / Number(selectedSim.monthly_income)) * 100).toFixed(1)}%</span>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-4 flex gap-2 border-t border-border">
+                <button 
+                  onClick={() => { loadSimulation(selectedSim); setShowDetailModal(false); }}
+                  className="flex-1 bg-primary-500 hover:bg-primary-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                >
+                  <Calculator className="w-4 h-4" /> Load ke Form
+                </button>
+                <button 
+                  onClick={(e) => { deleteSimulation(selectedSim.id, e); setShowDetailModal(false); }}
+                  className="px-4 py-2.5 text-sm font-medium text-red-500 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2"
+                >
+                  <Trash2 className="w-4 h-4" /> Hapus
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Save Modal */}
       {showSaveModal && (
