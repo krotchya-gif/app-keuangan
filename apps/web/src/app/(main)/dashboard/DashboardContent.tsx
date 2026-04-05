@@ -152,26 +152,27 @@ export function DashboardContent() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground text-sm mt-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-muted-foreground text-xs sm:text-sm mt-1">
             Gambaran keuangan Anda — April 2026
           </p>
         </div>
         <Link
           href="/budgeting"
-          className="flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-glow"
+          className="flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-white px-4 py-2.5 sm:py-2 rounded-xl sm:rounded-lg text-sm font-medium transition-colors shadow-glow"
         >
           <Plus className="w-4 h-4" />
-          Tambah Transaksi
+          <span className="hidden sm:inline">Tambah Transaksi</span>
+          <span className="sm:hidden">Transaksi</span>
         </Link>
       </div>
 
       {/* ── Row 1: KPI Cards ── */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         {/* Net Worth */}
-        <div className="card-premium p-5 col-span-1">
+        <div className="card-premium p-4 sm:p-5">
           <div className="flex items-center justify-between mb-3">
             <p className="text-sm text-muted-foreground font-medium">Net Worth</p>
             <span className={`flex items-center gap-1 text-xs font-medium ${isPositiveGrowth ? 'text-emerald-600' : 'text-red-500'}`}>
@@ -179,10 +180,10 @@ export function DashboardContent() {
               {formatPercent(Math.abs(netWorth.growth))}
             </span>
           </div>
-          <p className="text-2xl font-bold font-numeric text-foreground">
+          <p className="text-xl sm:text-2xl font-bold font-numeric text-foreground">
             {formatRupiahCompact(netWorth.current)}
           </p>
-          <div className="mt-3 h-10">
+          <div className="mt-3 h-8 sm:h-10">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={netWorthHistory}>
                 <defs>
@@ -202,14 +203,14 @@ export function DashboardContent() {
         </div>
 
         {/* Arus Kas */}
-        <div className="card-premium p-5">
+        <div className="card-premium p-4 sm:p-5">
           <div className="flex items-center justify-between mb-3">
             <p className="text-sm text-muted-foreground font-medium">Arus Kas Bulan Ini</p>
             <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${isPositiveCashFlow ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}`}>
               {isPositiveCashFlow ? 'Surplus' : 'Defisit'}
             </span>
           </div>
-          <p className={`text-2xl font-bold font-numeric ${isPositiveCashFlow ? 'amount-positive' : 'amount-negative'}`}>
+          <p className={`text-xl sm:text-2xl font-bold font-numeric ${isPositiveCashFlow ? 'amount-positive' : 'amount-negative'}`}>
             {isPositiveCashFlow ? '+' : ''}{formatRupiah(cashFlow.surplus)}
           </p>
           <div className="mt-4 space-y-2">
@@ -240,7 +241,7 @@ export function DashboardContent() {
         </div>
 
         {/* Checkup Score (Radar Preview) */}
-        <div className="card-premium p-5">
+        <div className="card-premium p-4 sm:p-5">
           <div className="flex items-center justify-between mb-1">
             <p className="text-sm text-muted-foreground font-medium">Checkup Keuangan</p>
             <Link href="/checkup" className="text-xs text-primary-500 hover:underline">Lihat detail →</Link>
@@ -266,9 +267,9 @@ export function DashboardContent() {
       </div>
 
       {/* ── Row 2: Savings Goals + Recent Transactions ── */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
         {/* Savings Goals */}
-        <div className="card-premium p-5 col-span-2">
+        <div className="card-premium p-4 sm:p-5 lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-foreground">Target Tabungan</h2>
             <Link href="/tabungan" className="text-xs text-primary-500 hover:underline">Kelola →</Link>
@@ -298,7 +299,7 @@ export function DashboardContent() {
         </div>
 
         {/* Upcoming Bills */}
-        <div className="card-premium p-5">
+        <div className="card-premium p-4 sm:p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-foreground">Tagihan Mendatang</h2>
             <Link href="/pembayaran" className="text-xs text-primary-500 hover:underline">Lihat →</Link>
@@ -326,9 +327,9 @@ export function DashboardContent() {
       </div>
 
       {/* ── Row 3: Budget + Recent Transactions ── */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
         {/* Budget Tracking */}
-        <div className="card-premium p-5 col-span-2">
+        <div className="card-premium p-4 sm:p-5 lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-foreground">Budget April 2026</h2>
             <Link href="/budgeting" className="text-xs text-primary-500 hover:underline">Detail →</Link>
@@ -363,7 +364,7 @@ export function DashboardContent() {
         </div>
 
         {/* Recent Transactions */}
-        <div className="card-premium p-5">
+        <div className="card-premium p-4 sm:p-5">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-semibold text-foreground">Transaksi Terbaru</h2>
             <Link href="/budgeting" className="text-xs text-primary-500 hover:underline">Semua →</Link>
@@ -388,7 +389,7 @@ export function DashboardContent() {
       </div>
 
       {/* ── Quick Actions ── */}
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
           { label: 'Net Worth', href: '/net-worth', icon: '💰', desc: 'Update aset & utang' },
           { label: 'Arus Kas', href: '/arus-kas', icon: '💸', desc: 'Cek surplus/defisit' },

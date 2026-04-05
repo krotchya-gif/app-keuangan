@@ -216,35 +216,36 @@ export function NetWorthContent() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Net Worth</h1>
-          <p className="text-muted-foreground text-sm mt-1">Pantau total kekayaan bersih Anda</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">Net Worth</h1>
+          <p className="text-muted-foreground text-xs sm:text-sm mt-1">Pantau total kekayaan bersih Anda</p>
         </div>
         <button 
           onClick={handleSaveSnapshot} 
           disabled={savingSnapshot}
-          className="flex items-center gap-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-glow"
+          className="flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-50 text-white px-4 py-2.5 sm:py-2 rounded-xl sm:rounded-lg text-sm font-medium transition-colors shadow-glow"
         >
           {savingSnapshot ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-          Simpan Snapshot Bulan Ini
+          <span className="hidden sm:inline">Simpan Snapshot Bulan Ini</span>
+          <span className="sm:hidden">Simpan Snapshot</span>
         </button>
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         {/* Net Worth */}
-        <div className="card-premium p-6 bg-gradient-to-br from-primary-500 to-primary-600 border-primary-500 text-white">
+        <div className="card-premium p-4 sm:p-6 bg-gradient-to-br from-primary-500 to-primary-600 border-primary-500 text-white">
           <p className="text-sm font-medium text-white/80">Net Worth</p>
-          <p className="text-3xl font-bold font-numeric mt-2">{formatRupiahCompact(result.netWorth)}</p>
+          <p className="text-2xl sm:text-3xl font-bold font-numeric mt-2">{formatRupiahCompact(result.netWorth)}</p>
           <div className={`flex items-center gap-1 mt-2 text-sm ${isPositive ? 'text-emerald-200' : 'text-red-200'}`}>
             {isPositive ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />}
             <span>{isPositive ? '+' : ''}{formatPercent(growth)} tren terkini</span>
           </div>
         </div>
-        <div className="card-premium p-6">
+        <div className="card-premium p-4 sm:p-6">
           <p className="text-sm text-muted-foreground font-medium">Total Aset</p>
-          <p className="text-2xl font-bold font-numeric text-foreground mt-2">{formatRupiahCompact(result.totalAssets)}</p>
+          <p className="text-xl sm:text-2xl font-bold font-numeric text-foreground mt-2">{formatRupiahCompact(result.totalAssets)}</p>
           <div className="mt-3 space-y-1">
             {Object.entries(result.breakdown.assets).map(([key, val]) => (
               <div key={key} className="flex justify-between text-xs">
@@ -257,7 +258,7 @@ export function NetWorthContent() {
             ))}
           </div>
         </div>
-        <div className="card-premium p-6">
+        <div className="card-premium p-4 sm:p-6">
           <p className="text-sm text-muted-foreground font-medium">Total Utang</p>
           <p className="text-2xl font-bold font-numeric text-red-500 mt-2">{formatRupiahCompact(result.totalDebts)}</p>
           <div className="mt-3 space-y-1">
@@ -278,9 +279,9 @@ export function NetWorthContent() {
       </div>
 
       {/* Charts Row */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4">
         {/* Progress Chart */}
-        <div className="card-premium p-5 col-span-2">
+        <div className="card-premium p-4 sm:p-5 lg:col-span-2">
           <h2 className="text-sm font-semibold text-foreground mb-4">Progress Net Worth</h2>
           <div className="h-56">
             {history.length > 0 ? (
@@ -305,7 +306,7 @@ export function NetWorthContent() {
         </div>
 
         {/* Pie Chart */}
-        <div className="card-premium p-5">
+        <div className="card-premium p-4 sm:p-5">
           <h2 className="text-sm font-semibold text-foreground mb-4">Komposisi Aset</h2>
           <div className="h-36">
             {pieData.length > 0 ? (
@@ -340,7 +341,7 @@ export function NetWorthContent() {
       </div>
 
       {/* Aset & Utang Detail */}
-      <div className="card-premium">
+      <div className="card-premium overflow-hidden">
         <div className="flex border-b border-border">
           {['aset', 'utang'].map((tab) => (
             <button

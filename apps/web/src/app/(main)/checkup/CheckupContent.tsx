@@ -101,23 +101,23 @@ export function CheckupContent() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Scorecard Keuangan</h1>
-          <p className="text-muted-foreground text-sm mt-1">Status 6 rasio kesehatan keuangan berdasarkan kondisi aset dan arus kas terkini Anda</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">Scorecard Keuangan</h1>
+          <p className="text-muted-foreground text-xs sm:text-sm mt-1">Status 6 rasio kesehatan keuangan berdasarkan kondisi aset dan arus kas terkini Anda</p>
         </div>
-        <div className="card-premium px-5 py-3 text-center border-emerald-500/30 bg-emerald-500/10">
-          <p className="text-3xl font-bold text-emerald-600 font-numeric">{sehatCount}/6</p>
+        <div className="card-premium px-4 sm:px-5 py-3 text-center border-emerald-500/30 bg-emerald-500/10 self-start">
+          <p className="text-2xl sm:text-3xl font-bold text-emerald-600 font-numeric">{sehatCount}/6</p>
           <p className="text-xs text-emerald-800/80 mt-0.5 font-medium">Rasio Sehat</p>
         </div>
       </div>
 
       {/* Radar Chart */}
-      <div className="card-premium p-6 bg-gradient-to-tr from-card to-muted/30">
+      <div className="card-premium p-4 sm:p-6 bg-gradient-to-tr from-card to-muted/30">
         <h2 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
           Gambaran Umum Kesehatan Keuangan
         </h2>
-        <div className="h-72">
+        <div className="h-64 sm:h-72">
           <ResponsiveContainer width="100%" height="100%">
             <RadarChart data={radarData} cx="50%" cy="50%" outerRadius="80%">
               <PolarGrid stroke="#e2e8f0" />
@@ -133,7 +133,7 @@ export function CheckupContent() {
       </div>
 
       {/* 6 Rasio Cards */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
         {checkupData.map((item) => {
           const color = getStatusColor(item.status);
           const isRupiahValue = item.name === 'Arus Kas';
@@ -150,7 +150,7 @@ export function CheckupContent() {
           }
 
           return (
-            <div key={item.name} className="card-premium p-5 hover:border-primary-500/30 transition-colors">
+            <div key={item.name} className="card-premium p-4 sm:p-5 hover:border-primary-500/30 transition-colors">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
                   <p className="text-sm font-semibold text-foreground">{item.name}</p>
@@ -165,7 +165,7 @@ export function CheckupContent() {
               </div>
 
               {/* Value */}
-              <p className="text-2xl font-bold font-numeric mt-1" style={{ color }}>
+              <p className="text-xl sm:text-2xl font-bold font-numeric mt-1" style={{ color }}>
                 {displayValue}
               </p>
 

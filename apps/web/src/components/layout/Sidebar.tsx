@@ -77,15 +77,15 @@ export function Sidebar() {
   return (
     <>
       {/* Mobile Top Header (hanya muncul di md:hidden) */}
-      <div className="md:hidden fixed top-0 w-full z-40 h-14 bg-card border-b border-border flex items-center justify-between px-4 shadow-sm">
+      <div className="md:hidden fixed top-0 w-full z-40 h-14 bg-card/95 backdrop-blur-sm border-b border-border flex items-center justify-between px-3 shadow-sm">
          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-glow">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center shadow-glow">
               <Wallet className="w-4 h-4 text-white" />
             </div>
-            <p className="font-bold text-foreground text-sm leading-none">Keuangan</p>
+            <p className="font-bold text-foreground text-base leading-none">Keuangan</p>
          </div>
-         <button onClick={() => setIsOpen(true)} className="p-1.5 text-muted-foreground hover:bg-muted rounded-md transition-colors">
-            <Menu className="w-6 h-6" />
+         <button onClick={() => setIsOpen(true)} className="p-2 text-muted-foreground hover:bg-muted rounded-lg transition-colors">
+            <Menu className="w-5 h-5" />
          </button>
       </div>
 

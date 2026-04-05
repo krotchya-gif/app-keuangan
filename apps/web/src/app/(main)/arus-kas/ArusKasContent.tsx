@@ -119,31 +119,35 @@ export function ArusKasContent() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Arus Kas (Cash Flow)</h1>
-          <p className="text-muted-foreground text-sm mt-1">Pencatatan kas masuk & proporsi kas keluar bulanan</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground">Arus Kas (Cash Flow)</h1>
+          <p className="text-muted-foreground text-xs sm:text-sm mt-1">Pencatatan kas masuk & proporsi kas keluar bulanan</p>
         </div>
         <div className="flex gap-2">
-           <button onClick={() => openAddModal('keluar')} className="flex items-center gap-2 bg-card hover:bg-muted border border-border text-foreground px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-            <ArrowDownRight className="w-4 h-4 text-red-500" /> Tambah Kas Keluar
+           <button onClick={() => openAddModal('keluar')} className="flex items-center justify-center gap-2 flex-1 sm:flex-none bg-card hover:bg-muted border border-border text-foreground px-3 sm:px-4 py-2.5 sm:py-2 rounded-xl sm:rounded-lg text-xs sm:text-sm font-medium transition-colors">
+            <ArrowDownRight className="w-4 h-4 text-red-500" /> 
+            <span className="hidden sm:inline">Tambah Kas Keluar</span>
+            <span className="sm:hidden">Kas Keluar</span>
            </button>
-           <button onClick={() => openAddModal('masuk')} className="flex items-center gap-2 bg-primary-500 hover:bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-glow">
-            <ArrowUpRight className="w-4 h-4" /> Tambah Kas Masuk
+           <button onClick={() => openAddModal('masuk')} className="flex items-center justify-center gap-2 flex-1 sm:flex-none bg-primary-500 hover:bg-primary-600 text-white px-3 sm:px-4 py-2.5 sm:py-2 rounded-xl sm:rounded-lg text-xs sm:text-sm font-medium transition-colors shadow-glow">
+            <ArrowUpRight className="w-4 h-4" /> 
+            <span className="hidden sm:inline">Tambah Kas Masuk</span>
+            <span className="sm:hidden">Kas Masuk</span>
            </button>
         </div>
       </div>
 
       {/* KPI Row */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="card-premium p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+        <div className="card-premium p-4 sm:p-6">
           <div className="flex items-center justify-between mb-2">
             <p className="text-sm text-muted-foreground font-medium">Surplus / Defisit</p>
             <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${isPositive ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}`}>
                {isPositive ? 'Sehat' : 'Defisit'}
             </span>
           </div>
-          <p className={`text-3xl font-bold font-numeric ${isPositive ? 'text-emerald-500' : 'text-red-500'}`}>
+          <p className={`text-2xl sm:text-3xl font-bold font-numeric ${isPositive ? 'text-emerald-500' : 'text-red-500'}`}>
             {isPositive ? '+' : ''}{formatRupiah(surplus)}
           </p>
           <div className="mt-4 flex items-center justify-between text-xs">
@@ -151,7 +155,7 @@ export function ArusKasContent() {
             <span className="font-numeric font-medium">{formatPercent(totalMasuk > 0 ? surplus / totalMasuk : 0)}</span>
           </div>
         </div>
-        <div className="card-premium p-6 col-span-2">
+        <div className="card-premium p-4 sm:p-6 sm:col-span-1 lg:col-span-2">
            <p className="text-sm text-muted-foreground font-medium mb-4">Postur Alokasi Pengeluaran Bulanan</p>
            <div className="space-y-4">
              {/* Progress Bar Container */}
@@ -181,15 +185,15 @@ export function ArusKasContent() {
       </div>
 
       {/* Main Lists */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* KAS MASUK */}
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           <div className="flex items-center justify-between border-b border-border pb-2">
-            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+            <h2 className="text-base sm:text-lg font-bold text-foreground flex items-center gap-2">
                <ArrowUpRight className="w-5 h-5 text-emerald-500" />
                Kas Masuk
             </h2>
-            <span className="text-emerald-500 font-bold font-numeric">{formatRupiah(totalMasuk)}</span>
+            <span className="text-emerald-500 font-bold font-numeric text-sm sm:text-base">{formatRupiah(totalMasuk)}</span>
           </div>
           <div className="space-y-2">
              {kasMasuk.length === 0 ? (
@@ -215,13 +219,13 @@ export function ArusKasContent() {
         </div>
 
         {/* KAS KELUAR */}
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           <div className="flex items-center justify-between border-b border-border pb-2">
-            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+            <h2 className="text-base sm:text-lg font-bold text-foreground flex items-center gap-2">
                <ArrowDownRight className="w-5 h-5 text-red-500" />
                Kas Keluar
             </h2>
-            <span className="text-red-500 font-bold font-numeric">-{formatRupiah(totalKeluar)}</span>
+            <span className="text-red-500 font-bold font-numeric text-sm sm:text-base">-{formatRupiah(totalKeluar)}</span>
           </div>
           <div className="space-y-4">
              {outGroups.filter(g => g.items.length > 0).map(group => (
